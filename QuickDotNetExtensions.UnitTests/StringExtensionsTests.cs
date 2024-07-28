@@ -2,11 +2,28 @@ namespace QuickDotNetExtensions.UnitTests
 {
     public class StringExtensionsTests
     {
+        /**********************************************************************************/
+        /************************************* Between ************************************/
+        /**********************************************************************************/
         [Fact]
         public void StringExtensions_Between_Should_Throw_When_SourceIsNull()
         {
             string source = null!;
             Assert.Throws<ArgumentNullException>(() => source.Between("first sequence", "second sequence"));
+        }
+
+        [Fact]
+        public void StringExtensions_Between_Should_ReturnEmptyString_When_FirstSequenceIsNotFound()
+        {
+            string source = "this begin my source end";
+            Assert.Equal(string.Empty, source.Between("i am not found", "end"));
+        }
+
+        [Fact]
+        public void StringExtensions_Between_Should_ReturnEmptyString_When_SecondSequenceIsNotFound()
+        {
+            string source = "this begin my source end";
+            Assert.Equal(string.Empty, source.Between("begin", "i am not found"));
         }
 
         [Fact]
@@ -16,6 +33,9 @@ namespace QuickDotNetExtensions.UnitTests
             Assert.Equal(" my source ", source.Between("begin", "end"));
         }
 
+        /********************************************************************************/
+        /************************************* Left ************************************/
+        /********************************************************************************/
         [Fact]
         public void StringExtensions_Left_Should_Throw_When_SourceIsNull()
         {
@@ -37,6 +57,9 @@ namespace QuickDotNetExtensions.UnitTests
             Assert.Equal("this my", source.Left(7));
         }
 
+        /********************************************************************************/
+        /************************************* Right ************************************/
+        /********************************************************************************/
         [Fact]
         public void StringExtensions_Right_Should_Throw_When_SourceIsNull()
         {
@@ -65,6 +88,9 @@ namespace QuickDotNetExtensions.UnitTests
             Assert.Equal(" source", source.Right(7));
         }
 
+        /********************************************************************************/
+        /******************************* EqualsIgnoreCase *******************************/
+        /********************************************************************************/
         [Fact]
         public void StringExtensions_EqualsIgnoreCase_Should_Throw_When_SourceIsNull()
         {
@@ -91,6 +117,43 @@ namespace QuickDotNetExtensions.UnitTests
         {
             string source = "source";
             Assert.False(source.EqualsIgnoreCase("I am different"));
+        }
+
+        /********************************************************************************/
+        /********************************* ToEnumOrNull *********************************/
+        /********************************************************************************/
+        public enum EnumOfTest
+        {
+            First, 
+            Second,
+        }
+
+        [Fact]
+        public void StringExtensions_ToEnumOrNull_Should_Throw_When_SourceIsNull()
+        {
+            string source = null!;
+            Assert.Throws<ArgumentNullException>(() => source.EqualsIgnoreCase("any string"));
+        }
+
+        [Fact]
+        public void StringExtensions_ToEnumOrNull_Should_ReturnNull_When_StringIsEmpty()
+        {
+            string source = "";
+            Assert.Null(source.ToEnumOrNull<EnumOfTest>());
+        }
+
+        [Fact]
+        public void StringExtensions_ToEnumOrNull_Should_ReturnNull_When_StringNotEqualsNotAnyEnumField()
+        {
+            string source = "Not Equals";
+            Assert.Null(source.ToEnumOrNull<EnumOfTest>());
+        }
+
+        [Fact]
+        public void StringExtensions_ToEnumOrNull_Should_ReturnEnumField_When_StringEqualsToEnumField()
+        {
+            string source = "First";
+            Assert.Equal(EnumOfTest.First, source.ToEnumOrNull<EnumOfTest>());
         }
     }
 }

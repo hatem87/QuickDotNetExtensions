@@ -14,9 +14,19 @@
         {
             if (source == null)
                 throw new ArgumentNullException(nameof(source));
-           
-            int firstPosition = source.IndexOf(firstSequence) + firstSequence.Length;
-            int secondPosition = source.IndexOf(secondSequence);
+            if (firstSequence == null)
+                throw new ArgumentNullException(nameof(firstSequence));
+            if (secondSequence == null)
+                throw new ArgumentNullException(nameof(secondSequence));
+
+            int firstSequencePosition = source.IndexOf(firstSequence);
+            int secondSequencePosition = source.IndexOf(secondSequence);
+            if (firstSequencePosition == -1 || secondSequencePosition == -1)
+                return string.Empty;
+
+            int firstPosition = firstSequencePosition + firstSequence.Length;
+            int secondPosition = secondSequencePosition;
+            
             string finalString = source.Substring(firstPosition, secondPosition - firstPosition);
             return finalString;
         }
@@ -33,6 +43,8 @@
         {
             if (source == null)
                 throw new ArgumentNullException(nameof(source));
+            if (secondString == null)
+                throw new ArgumentNullException(nameof(secondString));
 
             return string.Equals(source, secondString, StringComparison.InvariantCultureIgnoreCase);
         }
@@ -73,6 +85,24 @@
                 throw new ArgumentException("Length is greater than the string length.");
 
             return source.Substring(source.Length - length);
+        }
+
+        /// <summary>
+        /// Convert string value to the equivalent Enum field otherwise return null
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="source"></param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentNullException"></exception>
+        public static T? ToEnumOrNull<T>(this string? source) where T : struct
+        {
+            if (source == null)
+                throw new ArgumentNullException(nameof(source));
+
+            if (Enum.TryParse(typeof(T), source, out object result))
+                return (T)result;
+
+            return null;
         }
     }
 }
